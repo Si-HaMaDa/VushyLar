@@ -20,4 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('users', 'App\Http\Controllers\API\UsersAPIController');
+
+    Route::match(['GET', 'PATCH'], '/user/profile', 'App\Http\Controllers\API\UsersAPIController@profile');
 });

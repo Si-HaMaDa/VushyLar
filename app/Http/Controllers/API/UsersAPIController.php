@@ -45,6 +45,32 @@ class UsersAPIController extends Controller
     }
 
     /**
+     * Display the authnticated user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function profile()
+    {
+        $user = auth('api')->user();
+
+        if (request()->method() == 'GET')
+            return ['user' => $user];
+
+
+        $validated = request()->validate([
+            ...User::$rules,
+            'email' => 'required|email:rfc,dns|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|max:20',
+        ]);
+
+        // If any value is null remove it
+        $validated = array_filter($validated);
+
+        return $user->update($validated);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
