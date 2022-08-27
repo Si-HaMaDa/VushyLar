@@ -12,6 +12,10 @@ const routes = [
         path: "/profile",
         component: import("./components/Profile.vue"),
     },
+    {
+        path: "/users",
+        component: import("./components/Users.vue"),
+    },
 ];
 
 // 3. Create the router instance and pass the `routes` option
