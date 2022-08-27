@@ -62,6 +62,10 @@ class UsersAPIController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return ['message' => 'User Deleted Successfully!'];
     }
 }

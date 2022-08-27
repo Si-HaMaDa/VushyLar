@@ -116,7 +116,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <router-link to="/users" active-class="active" class="nav-link">
-                                        <i class="fas fa-users nav-icon"></i>
+                                        <i class="fas fa-users nav-icon teal"></i>
                                         <p>Users</p>
                                     </router-link>
                                 </li>

@@ -53,7 +53,13 @@
                                                         ></i>
                                                     </a>
 
-                                                    <a href="#" class="m-1">
+                                                    <a
+                                                        href="#"
+                                                        class="m-1"
+                                                        @click="
+                                                            deleteUser(user)
+                                                        "
+                                                    >
                                                         <i
                                                             class="fa fa-trash red"
                                                         ></i>
@@ -252,7 +258,7 @@ export default {
                         "User Created Successfully!",
                         "success"
                     );
-                    this.emitter.emit("userCreated");
+                    this.emitter.emit("loadUsers");
                     this.form = new Form({});
                 })
                 .catch(() => {
@@ -262,12 +268,47 @@ export default {
         loadUsers() {
             axios.get("api/users").then(({ data }) => (this.users = data));
         },
+        deleteUser(user) {
+            this.$swal({
+                title: `Are you sure to delete ?\n"${user.name}"`,
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                // Send request to the server
+                if (result.value) {
+                    this.form
+                        .delete("api/users/" + user.id)
+                        .then(() => {
+                            this.$swal(
+                                "Deleted!",
+                                "Your file has been deleted.",
+                                "success"
+                            );
+                            this.emitter.emit("loadUsers");
+                        })
+                        .catch(() => {
+                            this.$swal(
+                                "Failed!",
+                                "There was something wronge.",
+                                "warning"
+                            );
+                        });
+                }
+            });
+        },
     },
     mounted() {
         this.loadUsers();
-        this.emitter.on("userCreated", () => {
+        this.emitter.on("loadUsers", () => {
             this.loadUsers();
         });
+    },
+    unmounted() {
+        this.emitter.all.clear();
     },
 };
 </script>
