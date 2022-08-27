@@ -47,7 +47,16 @@
                                                     v-date="user.created_at"
                                                 ></td>
                                                 <td>
-                                                    <a href="#" class="m-1">
+                                                    <a
+                                                        href="javascript:;"
+                                                        class="m-1"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#addNew"
+                                                        :data-bs-editMode="1"
+                                                        :data-bs-editUser="
+                                                            user.id
+                                                        "
+                                                    >
                                                         <i
                                                             class="fa fa-edit blue"
                                                         ></i>

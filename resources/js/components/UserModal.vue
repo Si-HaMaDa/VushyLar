@@ -11,8 +11,10 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNewLabel">Add New</h5>
-                    <h5 class="modal-title" id="addNewLabel">
+                    <h5 class="modal-title" v-show="!editMode" id="addNewLabel">
+                        Add New
+                    </h5>
+                    <h5 class="modal-title" v-show="editMode" id="addNewLabel">
                         Update User's Info
                     </h5>
                     <button
@@ -24,7 +26,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form @submit.prevent="createUser()">
+                <form @submit.prevent="editMode ? updateUser() : createUser()">
                     <div class="modal-body">
                         <div class="form-group">
                             <input
@@ -114,14 +116,14 @@
                             Close
                         </button>
                         <button
-                            v-show="editmode"
+                            v-show="editMode"
                             type="submit"
                             class="btn btn-success"
                         >
                             Update
                         </button>
                         <button
-                            v-show="!editmode"
+                            v-show="!editMode"
                             type="submit"
                             class="btn btn-primary"
                         >
@@ -148,7 +150,7 @@ export default {
                 bio: "",
                 photo: "",
             }),
-            editmode: false,
+            editMode: false,
         };
     },
     methods: {
@@ -157,7 +159,6 @@ export default {
             this.form
                 .post("api/users")
                 .then(() => {
-                    console.log("Done!");
                     this.$Progress.finish();
                     document
                         .querySelector(
@@ -173,9 +174,80 @@ export default {
                     this.form.reset();
                 })
                 .catch(() => {
+                    this.$swal(
+                        "Failed!",
+                        "There was something wronge.",
+                        "warning"
+                    );
                     this.$Progress.fail();
                 });
         },
+        getUser(id) {
+            this.$Progress.start();
+            axios
+                .get("api/users/" + id)
+                .then((res) => {
+                    this.form.fill(res.data.user);
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    this.$swal(
+                        "Failed!",
+                        "Couldn't get user details!",
+                        "warning"
+                    ).then(() => {
+                        document
+                            .querySelector(
+                                '.modal-footer button[data-bs-dismiss="modal"]'
+                            )
+                            .click();
+                    });
+                    this.$Progress.fail();
+                });
+        },
+        updateUser() {
+            this.$Progress.start();
+            this.form
+                .patch("api/users/" + this.form.id)
+                .then(() => {
+                    this.$Progress.finish();
+                    document
+                        .querySelector(
+                            '.modal-footer button[data-bs-dismiss="modal"]'
+                        )
+                        .click();
+                    this.$swal(
+                        "Good job!",
+                        "User Updated Successfully!",
+                        "success"
+                    );
+                    this.emitter.emit("loadUsers");
+                    this.form.reset();
+                })
+                .catch(() => {
+                    this.$swal(
+                        "Failed!",
+                        "There was something wronge.",
+                        "warning"
+                    );
+                    this.$Progress.fail();
+                });
+        },
+    },
+    mounted() {
+        const exampleModal = document.getElementById("addNew");
+        exampleModal.addEventListener("show.bs.modal", (event) => {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+
+            this.editMode = button.getAttribute("data-bs-editMode");
+
+            if (button.getAttribute("data-bs-editMode"))
+                this.getUser(button.getAttribute("data-bs-editUser"));
+            else this.form.reset();
+
+            return false;
+        });
     },
 };
 </script>

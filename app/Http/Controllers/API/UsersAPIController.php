@@ -28,7 +28,7 @@ class UsersAPIController extends Controller
     {
         $validated = $request->validate(User::$rules);
 
-        return User::create($request->all());
+        return User::create($validated);
     }
 
     /**
@@ -39,7 +39,9 @@ class UsersAPIController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return ['user' => $user];
     }
 
     /**
@@ -51,7 +53,18 @@ class UsersAPIController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            ...User::$rules,
+            'email' => 'required|email:rfc,dns|unique:users,email,' . $id,
+            'password' => 'nullable|min:6|max:20',
+        ]);
+
+        // If any value is null remove it
+        $validated = array_filter($validated);
+
+        return $user->update($validated);
     }
 
     /**
