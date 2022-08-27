@@ -17,6 +17,13 @@ import router from "./router";
 
 const app = createApp({});
 
+// Import Vfrom and register it as global
+import Form from "vform";
+window.Form = Form;
+import { HasError, AlertError } from "vform/src/components/bootstrap5";
+app.component(HasError.name, HasError);
+app.component(AlertError.name, AlertError);
+
 import ExampleComponent from "./components/ExampleComponent.vue";
 app.component("example-component", ExampleComponent);
 

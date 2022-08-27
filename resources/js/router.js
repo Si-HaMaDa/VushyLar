@@ -6,15 +6,15 @@ import { createRouter, createWebHistory, RouterView } from "vue-router";
 const routes = [
     {
         path: "/dashboard",
-        component: import("./components/Dashboard.vue"),
+        component: () => import("./components/Dashboard.vue"),
     },
     {
         path: "/profile",
-        component: import("./components/Profile.vue"),
+        component: () => import("./components/Profile.vue"),
     },
     {
         path: "/users",
-        component: import("./components/Users.vue"),
+        component: () => import("./components/Users.vue"),
     },
 ];
 

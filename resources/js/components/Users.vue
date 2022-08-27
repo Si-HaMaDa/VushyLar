@@ -30,20 +30,20 @@
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Type</th>
+                                                <th>Date</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>183</td>
-                                                <td>John Doe</td>
-                                                <td>john@mail.com</td>
-                                                <td>
-                                                    <span
-                                                        class="tag tag-success"
-                                                        >User</span
-                                                    >
-                                                </td>
+                                            <tr
+                                                v-for="user in users.data"
+                                                :key="user.id"
+                                            >
+                                                <td>{{ user.id }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>{{ user.type }}</td>
+                                                <td>{{ user.created_at }}</td>
                                                 <td>
                                                     <a href="#" class="m-1">
                                                         <i
@@ -93,7 +93,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form>
+                    <form @submit.prevent="createUser()">
                         <div class="modal-body">
                             <div class="form-group">
                                 <input
@@ -103,7 +103,7 @@
                                     placeholder="Name"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': 0,
+                                        'is-invalid': form.errors.has('name'),
                                     }"
                                 />
                                 <has-error
@@ -120,7 +120,7 @@
                                     placeholder="Email Address"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': 0,
+                                        'is-invalid': form.errors.has('email'),
                                     }"
                                 />
                                 <has-error
@@ -137,7 +137,7 @@
                                     placeholder="Short bio for user (Optional)"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': 0,
+                                        'is-invalid': form.errors.has('bio'),
                                     }"
                                 ></textarea>
                                 <has-error :form="form" field="bio"></has-error>
@@ -150,7 +150,7 @@
                                     id="type"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': 0,
+                                        'is-invalid': form.errors.has('type'),
                                     }"
                                 >
                                     <option value="">Select User Role</option>
@@ -169,10 +169,12 @@
                                     v-model="form.password"
                                     type="password"
                                     name="password"
+                                    placeholder="Password"
                                     id="password"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': 0,
+                                        'is-invalid':
+                                            form.errors.has('password'),
                                     }"
                                 />
                                 <has-error
@@ -216,7 +218,7 @@
 export default {
     data() {
         return {
-            form: {
+            form: new Form({
                 id: "",
                 name: "",
                 email: "",
@@ -224,10 +226,26 @@ export default {
                 type: "",
                 bio: "",
                 photo: "",
-            },
+            }),
+            users: {},
+            editmode: false,
         };
     },
+    methods: {
+        createUser() {
+            this.form
+                .post("api/users")
+                .then(() => {
+                    console.log("Done!");
+                })
+                .catch(() => {});
+        },
+        loadUsers() {
+            axios.get("api/users").then(({ data }) => (this.users = data));
+        },
+    },
     mounted() {
+        this.loadUsers();
         console.log("Component mounted.");
     },
 };
