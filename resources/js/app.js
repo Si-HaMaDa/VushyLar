@@ -5,6 +5,7 @@
  */
 
 import './bootstrap';
+import 'admin-lte';
 import { createApp } from 'vue';
 
 /**
