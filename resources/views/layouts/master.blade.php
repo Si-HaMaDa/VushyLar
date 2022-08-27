@@ -99,14 +99,14 @@
                         data-accordion="false">
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
+                            <router-link to="/dashboard" active-class="active" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt blue"></i>
                                 <p>Dashboard</p>
-                            </a>
+                            </router-link>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
+                            <a href="#" active-class="active" class="nav-link">
+                                <i class="nav-icon fas fa-cogs green"></i>
                                 {{-- <i class="fa-solid fa-gears"></i> --}}
                                 <p>
                                     Management
@@ -129,15 +129,15 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-user"></i>
+                            <router-link to="/profile" active-class="active" class="nav-link">
+                                <i class="nav-icon fas fa-user orange"></i>
                                 <p>Profile</p>
-                            </a>
+                            </router-link>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                <i class="nav-icon fas fa-power-off"></i>
+                                <i class="nav-icon fas fa-power-off red"></i>
                                 <p>{{ __('Logout') }}</p>
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -155,8 +155,11 @@
         <div class="content-wrapper">
 
             <div class="content">
-                <div class="container-fluid">
+                <div class="container-fluid py-5">
                     {{-- Content --}}
+                    <!-- route outlet -->
+                    <!-- component matched by the route will render here -->
+                    <router-view></router-view>
                 </div>
             </div>
 
