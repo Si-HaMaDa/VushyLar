@@ -42,8 +42,10 @@
                                                 <td>{{ user.id }}</td>
                                                 <td>{{ user.name }}</td>
                                                 <td>{{ user.email }}</td>
-                                                <td>{{ user.type }}</td>
-                                                <td>{{ user.created_at }}</td>
+                                                <td v-UpLetter="user.type"></td>
+                                                <td
+                                                    v-date="user.created_at"
+                                                ></td>
                                                 <td>
                                                     <a href="#" class="m-1">
                                                         <i
@@ -87,7 +89,7 @@
                         <button
                             type="button"
                             class="close"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             aria-label="Close"
                         >
                             <span aria-hidden="true">&times;</span>
@@ -187,7 +189,8 @@
                             <button
                                 type="button"
                                 class="btn btn-danger"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
                             >
                                 Close
                             </button>
@@ -233,12 +236,28 @@ export default {
     },
     methods: {
         createUser() {
+            this.$Progress.start();
             this.form
                 .post("api/users")
                 .then(() => {
                     console.log("Done!");
+                    this.$Progress.finish();
+                    document
+                        .querySelector(
+                            '.modal-footer button[data-bs-dismiss="modal"]'
+                        )
+                        .click();
+                    this.$swal(
+                        "Good job!",
+                        "User Created Successfully!",
+                        "success"
+                    );
+                    this.emitter.emit("userCreated");
+                    this.form = new Form({});
                 })
-                .catch(() => {});
+                .catch(() => {
+                    this.$Progress.fail();
+                });
         },
         loadUsers() {
             axios.get("api/users").then(({ data }) => (this.users = data));
@@ -246,7 +265,9 @@ export default {
     },
     mounted() {
         this.loadUsers();
-        console.log("Component mounted.");
+        this.emitter.on("userCreated", () => {
+            this.loadUsers();
+        });
     },
 };
 </script>

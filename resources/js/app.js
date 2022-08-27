@@ -29,6 +29,44 @@ app.component("example-component", ExampleComponent);
 
 app.use(router);
 
+// Add some custom directives
+app.directive("UpLetter", (el, binding) => {
+    let text = binding.value;
+    el.innerText = text.charAt(0).toUpperCase() + text.slice(1);
+});
+import moment from "moment";
+app.directive("date", (el, binding) => {
+    let text = binding.value;
+    el.innerText = moment(text).format("MMM Do YYYY");
+});
+
+// Add progress bar
+import VueProgressBar from "@aacassandra/vue3-progressbar";
+const options = {
+    color: "#bffaf3",
+    failedColor: "#874b4b",
+    thickness: "5px",
+    transition: {
+        speed: "0.2s",
+        opacity: "0.6s",
+        termination: 300,
+    },
+    autoRevert: true,
+    location: "top",
+    inverse: false,
+};
+app.use(VueProgressBar, options);
+
+// Add Sweetalert2
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+app.use(VueSweetalert2);
+
+// Register  Emmiter
+import mitt from "mitt";
+const emitter = mitt();
+app.config.globalProperties.emitter = emitter;
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

@@ -154,6 +154,8 @@
                     <!-- route outlet -->
                     <!-- component matched by the route will render here -->
                     <router-view></router-view>
+                    <!-- set progressbar -->
+                    <vue-progress-bar></vue-progress-bar>
                 </div>
             </div>
 
