@@ -27,7 +27,7 @@
                     <div class="widget-user-image">
                         <img
                             class="img-circle"
-                            src="img/profile.png"
+                            :src="userImage"
                             alt="User Avatar"
                         />
                     </div>
@@ -190,9 +190,13 @@
                                             <input
                                                 type="file"
                                                 @change="updateProfile"
-                                                name="photo"
+                                                name="image"
                                                 class="form-input"
                                             />
+                                            <has-error
+                                                :form="form"
+                                                field="image"
+                                            ></has-error>
                                         </div>
                                     </div>
 
@@ -262,11 +266,30 @@ export default {
                 password: "",
                 type: "",
                 bio: "",
+                image: "",
             }),
         };
     },
     mounted() {},
     methods: {
+        updateProfile(e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            let limit = 1024 * 1024 * 2;
+            if (file["size"] > limit) {
+                this.$swal(
+                    "Oops...",
+                    "You are uploading a large file",
+                    "error"
+                );
+                return false;
+            }
+
+            reader.onloadend = (file) => (this.form.image = reader.result);
+
+            reader.readAsDataURL(file);
+        },
         updateUser() {
             this.$Progress.start();
             this.form
@@ -287,6 +310,12 @@ export default {
                     );
                     this.$Progress.fail();
                 });
+        },
+    },
+    computed: {
+        userImage() {
+            if (this.form.image.includes("base64")) return this.form.image;
+            return "storage/profile/" + this.form.image;
         },
     },
     created() {

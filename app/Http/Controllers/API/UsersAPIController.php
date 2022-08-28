@@ -57,12 +57,34 @@ class UsersAPIController extends Controller
         if (request()->method() == 'GET')
             return ['user' => $user];
 
-
         $validated = request()->validate([
             ...User::$rules,
             'email' => 'required|email:rfc,dns|unique:users,email,' . $user->id,
             'password' => 'nullable|min:6|max:20',
+            'image' => 'nullable',
         ]);
+
+        if ($validated['image'] != $user->image) {
+
+            $explode = explode(',', $validated['image']);
+            $allow = ['png', 'jpg', 'jpeg', 'svg'];
+            $format = str_replace(
+                ['data:image/', ';', 'base64',],
+                ['', '', '',],
+                $explode[0]
+            );
+
+            // check file format
+            if (in_array($format, $allow) && preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $explode[1])) {
+                $imageName = time() . '.' . $format;
+
+                \Storage::disk('public')->put('profile/' . $imageName, base64_decode($explode[1]));
+
+                $validated['image'] = $imageName;
+
+                \Storage::disk('public')->delete('profile/' . $user->image);
+            }
+        }
 
         // If any value is null remove it
         $validated = array_filter($validated);
