@@ -16,6 +16,11 @@ const routes = [
         path: "/users",
         component: () => import("./components/Users.vue"),
     },
+    {
+        name: "not-found",
+        path: "/:pathMatch(.*)*",
+        component: () => import("./components/NotFound.vue"),
+    },
 ];
 
 // 3. Create the router instance and pass the `routes` option
