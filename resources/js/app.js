@@ -15,7 +15,23 @@ import router from "./router";
  * to use in your application's views. An example is included for you.
  */
 
-const app = createApp({});
+const app = createApp({
+    data() {
+        return {
+            search: "",
+        };
+    },
+    methods: {
+        sendSearch: _.debounce(function () {
+            this.emitter.emit("sendSearch");
+        }, 1000),
+    },
+    watch: {
+        search: function () {
+            this.sendSearch();
+        },
+    },
+});
 
 app.use(router);
 
@@ -67,6 +83,7 @@ app.use(VueSweetalert2);
 
 // Register  Emmiter
 import mitt from "mitt";
+import _ from "lodash";
 const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 

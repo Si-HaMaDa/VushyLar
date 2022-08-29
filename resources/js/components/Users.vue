@@ -85,7 +85,7 @@
                     <div class="card-footer">
                         <LaravelVuePagination
                             :data="users"
-                            :show-disabled="1"
+                            :show-disabled="true"
                             @pagination-change-page="loadUsers"
                         />
                     </div>
@@ -109,10 +109,11 @@ export default {
         UserModal,
     },
     methods: {
-        loadUsers(page = 1) {
-            axios
-                .get("api/users?page=" + page)
-                .then(({ data }) => (this.users = data));
+        loadUsers(page = 1, search = "") {
+            let url = "api/users?page=" + page;
+            if ((search = this.$parent.$parent.search))
+                url += "&search=" + search;
+            axios.get(url).then(({ data }) => (this.users = data));
         },
         deleteUser(user) {
             this.$swal({
@@ -150,6 +151,9 @@ export default {
     mounted() {
         this.loadUsers();
         this.emitter.on("loadUsers", () => {
+            this.loadUsers();
+        });
+        this.emitter.on("sendSearch", () => {
             this.loadUsers();
         });
     },

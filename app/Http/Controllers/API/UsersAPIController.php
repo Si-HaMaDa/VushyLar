@@ -15,7 +15,12 @@ class UsersAPIController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate(5);
+        $user = User::latest();
+        if ($search = request()->search)
+            $user->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%")
+                ->orWhere('type', 'LIKE', "%$search%");
+        return $user->paginate(5);
     }
 
     /**
