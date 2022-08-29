@@ -1,98 +1,107 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="card">
-                    <h3 class="card-header">
-                        Users Component
-                        <div class="card-tools">
-                            <button
-                                class="btn btn-success"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addNew"
-                            >
-                                Add New
-                                <i class="fas fa-user-plus fa-fw"></i>
-                            </button>
-                        </div>
-                    </h3>
+    <div>
+        <div class="container" v-if="gate.isAdminOrAuthor()">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="card">
+                        <h3 class="card-header">
+                            Users Component
+                            <div class="card-tools">
+                                <button
+                                    class="btn btn-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addNew"
+                                >
+                                    Add New
+                                    <i class="fas fa-user-plus fa-fw"></i>
+                                </button>
+                            </div>
+                        </h3>
 
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card-body table-responsive p-0">
-                                    <table
-                                        class="table table-hover text-nowrap"
-                                    >
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Type</th>
-                                                <th>Date</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr
-                                                v-for="user in users.data"
-                                                :key="user.id"
-                                            >
-                                                <td>{{ user.id }}</td>
-                                                <td>{{ user.name }}</td>
-                                                <td>{{ user.email }}</td>
-                                                <td v-UpLetter="user.type"></td>
-                                                <td
-                                                    v-date="user.created_at"
-                                                ></td>
-                                                <td>
-                                                    <a
-                                                        href="javascript:;"
-                                                        class="m-1"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#addNew"
-                                                        :data-bs-editMode="1"
-                                                        :data-bs-editUser="
-                                                            user.id
-                                                        "
-                                                    >
-                                                        <i
-                                                            class="fa fa-edit blue"
-                                                        ></i>
-                                                    </a>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card-body table-responsive p-0">
+                                        <table
+                                            class="table table-hover text-nowrap"
+                                        >
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Type</th>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr
+                                                    v-for="user in users.data"
+                                                    :key="user.id"
+                                                >
+                                                    <td>{{ user.id }}</td>
+                                                    <td>{{ user.name }}</td>
+                                                    <td>{{ user.email }}</td>
+                                                    <td
+                                                        v-UpLetter="user.type"
+                                                    ></td>
+                                                    <td
+                                                        v-date="user.created_at"
+                                                    ></td>
+                                                    <td>
+                                                        <a
+                                                            href="javascript:;"
+                                                            class="m-1"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#addNew"
+                                                            :data-bs-editMode="
+                                                                1
+                                                            "
+                                                            :data-bs-editUser="
+                                                                user.id
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-edit blue"
+                                                            ></i>
+                                                        </a>
 
-                                                    <a
-                                                        href="#"
-                                                        class="m-1"
-                                                        @click="
-                                                            deleteUser(user)
-                                                        "
-                                                    >
-                                                        <i
-                                                            class="fa fa-trash red"
-                                                        ></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                        <a
+                                                            href="#"
+                                                            class="m-1"
+                                                            @click="
+                                                                deleteUser(user)
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-trash red"
+                                                            ></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-footer">
-                        <LaravelVuePagination
-                            :data="users"
-                            :show-disabled="true"
-                            @pagination-change-page="loadUsers"
-                        />
+                        <div class="card-footer">
+                            <LaravelVuePagination
+                                :data="users"
+                                :show-disabled="true"
+                                @pagination-change-page="loadUsers"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
+            <UserModal />
         </div>
-        <UserModal />
+        <div class="container" v-else>
+            <not-found></not-found>
+        </div>
     </div>
 </template>
 

@@ -15,6 +15,9 @@ class UsersAPIController extends Controller
      */
     public function index()
     {
+        if (!\Gate::allows('isAdmin') && !\Gate::allows('isAuthor'))
+            return [];
+
         $user = User::latest();
         if ($search = request()->search)
             $user->where('name', 'LIKE', "%$search%")
@@ -31,6 +34,9 @@ class UsersAPIController extends Controller
      */
     public function store(Request $request)
     {
+        if (!\Gate::allows('isAdmin') && !\Gate::allows('isAuthor'))
+            return [];
+
         $validated = $request->validate(User::$rules);
 
         return User::create($validated);
@@ -106,6 +112,9 @@ class UsersAPIController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!\Gate::allows('isAdmin') && !\Gate::allows('isAuthor'))
+            return [];
+
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
@@ -128,6 +137,8 @@ class UsersAPIController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('isAdmin');
+
         $user = User::findOrFail($id);
 
         $user->delete();

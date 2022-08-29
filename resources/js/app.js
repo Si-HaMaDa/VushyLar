@@ -47,6 +47,8 @@ app.component("example-component", ExampleComponent);
 
 import LaravelVuePagination from "laravel-vue-pagination";
 app.component("LaravelVuePagination", LaravelVuePagination);
+import NotFound from "./components/NotFound.vue";
+app.component("NotFound", NotFound);
 
 // Add some custom directives
 app.directive("UpLetter", (el, binding) => {
@@ -86,6 +88,9 @@ import mitt from "mitt";
 import _ from "lodash";
 const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
+
+import Gate from "./Gate";
+app.config.globalProperties.gate = new Gate(window.user);
 
 /**
  * The following block of code may be used to automatically register your
