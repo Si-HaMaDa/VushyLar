@@ -17,6 +17,8 @@ import router from "./router";
 
 const app = createApp({});
 
+app.use(router);
+
 // Import Vfrom and register it as global
 import Form from "vform";
 window.Form = Form;
@@ -27,7 +29,8 @@ app.component(AlertError.name, AlertError);
 import ExampleComponent from "./components/ExampleComponent.vue";
 app.component("example-component", ExampleComponent);
 
-app.use(router);
+import LaravelVuePagination from "laravel-vue-pagination";
+app.component("LaravelVuePagination", LaravelVuePagination);
 
 // Add some custom directives
 app.directive("UpLetter", (el, binding) => {

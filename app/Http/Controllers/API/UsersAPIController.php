@@ -15,7 +15,7 @@ class UsersAPIController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate();
+        return User::latest()->paginate(5);
     }
 
     /**
